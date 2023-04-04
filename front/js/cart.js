@@ -84,9 +84,11 @@ document.addEventListener("change", (event) => {
 });
 function supprimerProduit(id, color) {
   let panier = recupPanier();
-  panier = panier.filter((produit) => produit.id !== id || produit.colors !== color);
+  panier = panier.filter(
+    (produit) => produit.id !== id || produit.colors !== color
+  );
   sauvPanier(panier);
-  location.reload(); // recharge la page pour mettre à jour l'affichage du panier
+  location.reload();
 }
 document.addEventListener("click", (event) => {
   if (event.target.classList.contains("deleteItem")) {
@@ -95,4 +97,24 @@ document.addEventListener("click", (event) => {
     supprimerProduit(id, couleur);
   }
 });
+function afficherTotaux() {
+  const produits = recupPanier();
+  let totalArticles = 0;
+  let totalPrix = 0;
+
+  produits.forEach((produit) => {
+    const quantite = parseInt(produit.quantity);
+    const prix = parseFloat(produit.prix);
+    totalArticles += quantite;
+    totalPrix += quantite * prix;
+  });
+
+  const placeTotalArticles = document.getElementById("totalQuantity");
+  placeTotalArticles.innerHTML = totalArticles.toString();
+
+  const placeTotalPrix = document.getElementById("totalPrice");
+  placeTotalPrix.innerHTML = totalPrix;
+}
+
 affichagePanier();
+afficherTotaux();
