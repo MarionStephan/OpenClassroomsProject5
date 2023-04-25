@@ -1,3 +1,4 @@
+// Récupération de l'id en Param et création des constantes pour chaque élément de l'article
 const urlParams = new URLSearchParams(document.location.search);
 const kanapId = urlParams.get("id");
 const produitUrl = `http://localhost:3000/api/products/${kanapId}`;
@@ -8,6 +9,8 @@ const prixKanap = document.getElementById("price");
 const descKanap = document.getElementById("description");
 const colorOptions = document.getElementById("colors");
 const qteProduit = document.getElementById("quantity");
+
+// Fonction d'affichage des produits
 fetch(produitUrl)
   .then((res) => res.json())
   .then((produit) => {
@@ -24,6 +27,7 @@ fetch(produitUrl)
     for (let couleur of colorsKanap) {
       colorOptions.innerHTML += `<option value="${couleur}">${couleur}</option>`;
     }
+    // Ajout au panier des articles au clic
     const ajoutPanier = document.getElementById("addToCart");
     ajoutPanier.addEventListener("click", () => {
       let panier = {
@@ -33,6 +37,7 @@ fetch(produitUrl)
         quantity: qteProduit.value,
         prix: priceKanap,
       };
+      // Récupération du panier dans le LS
       function recupPanier() {
         let panier = JSON.parse(localStorage.getItem("kanapLs"));
         if (panier === null) {
@@ -41,6 +46,7 @@ fetch(produitUrl)
           return panier;
         }
       }
+      // Fonction d'ajout d'un produit au panier
       function ajoutPanier(produit) {
         let panier = recupPanier();
         const produitIndex = panier.findIndex(
@@ -59,6 +65,7 @@ fetch(produitUrl)
           `Le canapé ${nameKanap} ${colorOptions.value} a été ajouté en ${qteProduit.value} exemplaires à votre panier !`
         );
       }
+      // Fonction de sauvegarde du panier dans le LS
       function sauvPanier(panier) {
         localStorage.setItem("kanapLs", JSON.stringify(panier));
       }

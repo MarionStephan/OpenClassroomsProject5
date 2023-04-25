@@ -1,11 +1,13 @@
 const listeKanap = document.getElementById("items");
 const apiUrl = "http://localhost:3000/api/products/";
+
+// Fonction de récupération de l'API
 async function fetchData() {
 	return fetch(apiUrl)
     .then((resp) => resp.json())
     .catch((err) => console.log(err));
 }
-
+// Fonction d'affichage des articles
 async function displayArticles() {
 	let articles = await fetchData();
 	console.log(articles);
