@@ -108,14 +108,18 @@ function afficherTotaux() {
   const produits = recupPanier();
   let totalArticles = 0;
   let totalPrix = 0;
-
-  produits.forEach((produit) => {
-    const quantite = parseInt(produit.quantity);
-    const prix = parseFloat(produit.prix);
-    totalArticles += quantite;
-    totalPrix += quantite * prix;
-  });
-
+  if (!Array.isArray(produits)) {
+    // Le panier est vide, on affiche 0 pour les totaux
+    totalArticles = 0;
+    totalPrix = 0;
+  } else {
+    produits.forEach((produit) => {
+      const quantite = parseInt(produit.quantity);
+      const prix = parseFloat(produit.prix);
+      totalArticles += quantite;
+      totalPrix += quantite * prix;
+    });
+  }
   const placeTotalArticles = document.getElementById("totalQuantity");
   placeTotalArticles.innerHTML = totalArticles.toString();
 
@@ -181,9 +185,10 @@ function validateContact() {
     "Ville invalide"
   );
   const emailResult = validateInput("email", email, regexMail, "Mail invalide");
-  return prenomResult && nomResult && adresseResult && villeResult && emailResult;
+  return (
+    prenomResult && nomResult && adresseResult && villeResult && emailResult
+  );
 }
-
 
 // Fonction de récupération des infos contact pour l'objet de commande
 function getContactInfo() {
@@ -198,8 +203,13 @@ function getContactInfo() {
 // Fonction de récupération des articles du panier
 function getProductsFromCart() {
   const cart = recupPanier();
+  if (!cart || cart.length === 0) {
+    // Gérer le cas où le panier est vide ou non initialisé
+    return [];
+  }
   return cart.map((item) => item.id);
 }
+
 
 // Fonction de validation du panier s'il n'est pas vide
 function validateProducts(products) {
@@ -228,98 +238,3 @@ async function validate() {
     window.location.href = `confirmation.html?orderId=${orderId}`;
   }
 }
-// async function validate() {
-//   let panier = recupPanier();
-//   const email = document.getElementById("email").value;
-//   const adresse = document.getElementById("address").value;
-//   const nom = document.getElementById("lastName").value;
-//   const prenom = document.getElementById("firstName").value;
-//   const ville = document.getElementById("city").value;
-//   const emailAlert = document.getElementById("emailErrorMsg");
-//   const adresseAlert = document.getElementById("addressErrorMsg");
-//   const nomAlert = document.getElementById("lastNameErrorMsg");
-//   const prenomAlert = document.getElementById("firstNameErrorMsg");
-//   const villeAlert = document.getElementById("cityErrorMsg");
-//   const regexMail =
-//     /^[_A-z0-9-]+(\.[_A-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/;
-//   const regexNom = /^(?:(?:[A-Za-zÀ-ÖØ-öø-ÿ-]+(?:\s+|$)){1,})$/;
-//   const regexPrenom = regexNom;
-//   const regexVille = regexNom;
-//   const regexAdresse = /^[#.0-9a-zA-ZÀ-ÿ\s,-]{2,}$/;
-//   const emailResult = regexMail.test(email);
-//   const adresseResult = regexAdresse.test(adresse);
-//   const villeResult = regexVille.test(ville);
-//   const nomResult = regexNom.test(nom);
-//   const prenomResult = regexPrenom.test(prenom);
-
-//   if (!prenomResult || prenom.value === "") {
-//     prenomAlert.innerHTML = "Prénom invalide";
-//     prenomAlert.style.display = "block";
-//   } else {
-//     prenomAlert.innerHTML = "";
-//     prenomAlert.style.display = "none";
-//   }
-//   if (!nomResult || nom.value === "") {
-//     nomAlert.innerHTML = "Nom invalide";
-//     nomAlert.style.display = "block";
-//   } else {
-//     nomAlert.innerHTML = "";
-//     nomAlert.style.display = "none";
-//   }
-//   if (!adresseResult || adresse.value === "") {
-//     adresseAlert.innerHTML = "Adresse invalide";
-//     adresseAlert.style.display = "block";
-//   } else {
-//     adresseAlert.innerHTML = "";
-//     adresseAlert.style.display = "none";
-//   }
-//   if (!villeResult || ville.value === "") {
-//     villeAlert.innerHTML = "Ville invalide";
-//     villeAlert.style.display = "block";
-//   } else {
-//     villeAlert.innerHTML = "";
-//     villeAlert.style.display = "none";
-//   }
-//   if (!emailResult || email.value === "") {
-//     emailAlert.innerHTML = "Mail invalide";
-//     emailAlert.style.display = "block";
-//   } else {
-//     emailAlert.innerHTML = "";
-//     emailAlert.style.display = "none";
-//   }
-//   if (
-//     prenomResult &&
-//     prenom.value !== "" &&
-//     nomResult &&
-//     nom.value !== "" &&
-//     adresseResult &&
-//     adresse.value !== "" &&
-//     villeResult &&
-//     ville.value !== "" &&
-//     emailResult &&
-//     email.value !== ""
-//   ) {
-//     let contact = {
-//       firstName: prenom,
-//       lastName: nom,
-//       address: adresse,
-//       city: ville,
-//       email: email,
-//     };
-//     let products = [];
-//     for (let kanapId of panier) {
-//       products.push(kanapId.id);
-//     }
-//     let panierFin = { contact, products };
-//     const response = await fetch("http://localhost:3000/api/products/order", {
-//       method: "POST",
-//       body: JSON.stringify(panierFin),
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//     });
-//     const commande = await response.json();
-//     window.location.href = `confirmation.html?orderId=${commande.orderId}`;
-//   }
-// }
-// validate();
