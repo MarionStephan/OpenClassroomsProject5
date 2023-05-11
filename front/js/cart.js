@@ -121,14 +121,12 @@ async function afficherTotaux() {
     });
     produits.forEach((produit) => {
       const quantite = parseInt(produit.quantity);
-      const prix = produit.prix;
-      
-    });
-  }totalArticles += quantite;
+      const prix = parseFloat(produit.prix);
+      totalArticles += quantite;
       totalPrix += quantite * prix;
-  const placeTotalArticles = document.getElementById("totalQuantity");
-  placeTotalArticles.innerHTML = totalArticles.toString();
-
+      console.log(totalPrix);
+    });
+  }
   const placeTotalPrix = document.getElementById("totalPrice");
   placeTotalPrix.innerHTML = totalPrix;
 }
