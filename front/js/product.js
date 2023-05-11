@@ -20,12 +20,20 @@ fetch(produitUrl)
     const priceKanap = produit.price;
     const descrKanap = produit.description;
     const colorsKanap = produit.colors;
-    imgTxtAlt.innerHTML = `<img src="${imgKanape}" alt="${imgTxtA}">`;
-    nomKanap.innerHTML = `${nameKanap}`;
-    prixKanap.innerHTML = `${priceKanap}`;
-    descKanap.innerHTML = `${descrKanap}`;
+    const baliseImg = document.createElement('img');
+    baliseImg.src = imgKanape;
+    baliseImg.alt = imgTxtA;
+    imgKanap.appendChild(baliseImg);
+    // imgTxtAlt.innerHTML = `<img src="${imgKanape}" alt="${imgTxtA}">`;
+    nomKanap.textContent = nameKanap;
+    prixKanap.textContent = priceKanap;
+    descKanap.textContent = descrKanap;
     for (let couleur of colorsKanap) {
-      colorOptions.innerHTML += `<option value="${couleur}">${couleur}</option>`;
+      const option = document.createElement('option');
+      option.textContent = couleur;
+      option.value = couleur;
+      colorOptions.appendChild(option);
+      // colorOptions.innerHTML += `<option value="${couleur}">${couleur}</option>`;
     }
     // Ajout au panier des articles au clic
     const ajoutPanier = document.getElementById("addToCart");
@@ -35,7 +43,6 @@ fetch(produitUrl)
         name: nameKanap,
         colors: colorOptions.value,
         quantity: qteProduit.value,
-        prix: priceKanap,
       };
       // Récupération du panier dans le LS
       function recupPanier() {
@@ -46,7 +53,13 @@ fetch(produitUrl)
           return panier;
         }
       }
+      
       // Fonction d'ajout d'un produit au panier
+      /**
+       * Description
+       * @param {any} produit
+       * @returns {any}
+       */
       function ajoutPanier(produit) {
         let panier = recupPanier();
         const produitIndex = panier.findIndex(
@@ -65,7 +78,12 @@ fetch(produitUrl)
           `Le canapé ${nameKanap} ${colorOptions.value} a été ajouté en ${qteProduit.value} exemplaires à votre panier !`
         );
       }
-      // Fonction de sauvegarde du panier dans le LS
+      /**
+       * Fonction de sauvegarde du panier dans le LS
+       * Description
+       * @param {any} panier
+       * @returns {any}
+       */
       function sauvPanier(panier) {
         localStorage.setItem("kanapLs", JSON.stringify(panier));
       }

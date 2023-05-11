@@ -27,7 +27,7 @@ async function fetchApi() {
   return tableauPanier;
 }
 
-// Fonction d'affichage du panier)
+// Fonction d'affichage du panier
 async function affichagePanier() {
   const produits = await fetchApi();
   if (panier !== null && panier.length !== 0) {
@@ -104,8 +104,10 @@ document.addEventListener("click", (event) => {
   }
 });
 // Fonction d'affichage des totaux
-function afficherTotaux() {
+async function afficherTotaux() {
+  const total = await fetchApi();
   const produits = recupPanier();
+  console.log(total);
   let totalArticles = 0;
   let totalPrix = 0;
   if (!Array.isArray(produits)) {
@@ -113,13 +115,17 @@ function afficherTotaux() {
     totalArticles = 0;
     totalPrix = 0;
   } else {
+    total.forEach((produit) => {
+      const prix = produit.prix;
+      console.log(prix);
+    });
     produits.forEach((produit) => {
       const quantite = parseInt(produit.quantity);
-      const prix = parseFloat(produit.prix);
-      totalArticles += quantite;
-      totalPrix += quantite * prix;
+      const prix = produit.prix;
+      
     });
-  }
+  }totalArticles += quantite;
+      totalPrix += quantite * prix;
   const placeTotalArticles = document.getElementById("totalQuantity");
   placeTotalArticles.innerHTML = totalArticles.toString();
 
@@ -220,7 +226,12 @@ function validateProducts(products) {
     return true;
   }
 }
-// Fonction de validation de la commande avec ajouts du tableau de produits et de l'objet de contact et validation des éléments
+
+/**
+ * @Description <Fonction de validation de la commande avec ajouts du tableau de produits et de l'objet de contact et validation des éléments>
+ * @returns {any}
+ * @params
+ */
 async function validate() {
   const contact = getContactInfo();
   const products = getProductsFromCart();
