@@ -113,14 +113,7 @@ async function affichagePanier() {
     });
   }
 }
-// Fonction de récupération du panier dans le LS
-function recupPanier() {
-  return JSON.parse(localStorage.getItem("kanapLs"));
-}
-// Fonction d'enregistrement du panier dans le LS'
-function sauvPanier(panier) {
-  localStorage.setItem("kanapLs", JSON.stringify(panier));
-}
+
 // Fonction de modification de la quantité d'un article dans le panier au clic
 function modifQte(id, color, nouvQte) {
   const panier = recupPanier();
@@ -130,6 +123,7 @@ function modifQte(id, color, nouvQte) {
       sauvPanier(panier);
     }
   }
+  afficherTotaux();
 }
 document.addEventListener("change", (event) => {
   if (event.target.classList.contains("itemQuantity")) {
@@ -137,7 +131,8 @@ document.addEventListener("change", (event) => {
     const color = event.target.closest(".cart__item").dataset.color;
     const nouvQte = event.target.value;
     modifQte(id, color, nouvQte);
-    location.reload(); // recharge la page pour mettre à jour l'affichage du panier
+    
+    //location.reload();  recharge la page pour mettre à jour l'affichage du panier
   }
 });
 // Fonction de suppression d'un article au clic
@@ -147,20 +142,22 @@ function supprimerProduit(id, color) {
     (produit) => produit.id !== id || produit.colors !== color
   );
   sauvPanier(panier);
-  location.reload();
+  afficherTotaux();
+  //location.reload();
 }
 document.addEventListener("click", (event) => {
   if (event.target.classList.contains("deleteItem")) {
     const id = event.target.closest(".cart__item").dataset.id;
     const couleur = event.target.closest(".cart__item").dataset.color;
     supprimerProduit(id, couleur);
+    afficherTotaux();
   }
 });
 // Fonction d'affichage des totaux
 async function afficherTotaux() {
-  const total = await fetchApi();
+  const totalpanier = await fetchApi();
   const produits = recupPanier();
-  console.log(total);
+  console.log(totalpanier);
   let totalArticles = 0;
   let totalPrix = 0;
   if (!Array.isArray(produits)) {
@@ -168,20 +165,19 @@ async function afficherTotaux() {
     totalArticles = 0;
     totalPrix = 0;
   } else {
-    total.forEach((produit) => {
-      const prix = produit.prix;
-      console.log(prix);
-    });
-    produits.forEach((produit) => {
-      const quantite = parseInt(produit.quantity);
+    totalpanier.forEach((produit) => {
+      const quantite = parseInt(produit.quantite);
       const prix = produit.prix;
       totalArticles += quantite;
       totalPrix += quantite * prix;
     });
   }
   const placeTotalPrix = document.getElementById("totalPrice");
-  placeTotalPrix.innerHTML = totalPrix;
+  placeTotalPrix.textContent = totalPrix;
+  const placeTotalArticles = document.getElementById("totalQuantity");
+  placeTotalArticles.innerHTML = totalArticles.toString();
 }
+
 
 affichagePanier();
 afficherTotaux();

@@ -45,12 +45,12 @@ fetch(produitUrl)
         quantity: qteProduit.value,
       };
       // Récupération du panier dans le LS
-      function recupPanier() {
+      function recupePanier() {
         let panier = JSON.parse(localStorage.getItem("kanapLs"));
         if (panier === null) {
           return []; //si le LocalStorage est vide, on crée un tableau vide
         } else {
-          return panier;
+          return [panier];
         }
       }
       
@@ -61,7 +61,8 @@ fetch(produitUrl)
        * @returns {any}
        */
       function ajoutPanier(produit) {
-        let panier = recupPanier();
+        let panier = recupePanier();
+        console.log(panier);
         const produitIndex = panier.findIndex(
           (p) => p.id === produit.id && p.colors === produit.colors
         );
@@ -78,15 +79,7 @@ fetch(produitUrl)
           `Le canapé ${nameKanap} ${colorOptions.value} a été ajouté en ${qteProduit.value} exemplaires à votre panier !`
         );
       }
-      /**
-       * Fonction de sauvegarde du panier dans le LS
-       * Description
-       * @param {any} panier
-       * @returns {any}
-       */
-      function sauvPanier(panier) {
-        localStorage.setItem("kanapLs", JSON.stringify(panier));
-      }
+     
       if (
         colorOptions.value === "" ||
         qteProduit.value <= 0 ||
