@@ -1,183 +1,29 @@
-const panier = JSON.parse(localStorage.getItem("kanapLs"));
+const panier = new Panier();
 
-// Fonction de récupération de l'API
-async function fetchApi() {
-  let tableauPanier = [];
-  if (panier !== null) {
-    for (let i = 0; i < panier.length; i++) {
-      await fetch("http://localhost:3000/api/products/" + panier[i].id)
-        .then((res) => res.json())
-        .then((kanap) => {
-          const produit = {
-            _id: kanap._id,
-            nom: kanap.name,
-            prix: kanap.price,
-            couleur: panier[i].colors,
-            quantite: panier[i].quantity,
-            alt: kanap.altTxt,
-            img: kanap.imageUrl,
-          };
-          tableauPanier.push(produit);
-        })
-        .catch(function (err) {
-          console.log(err);
-        });
-    }
-  }
-  return tableauPanier;
-}
-
-// Fonction d'affichage du panier
 async function affichagePanier() {
-  const produits = await fetchApi();
-  if (panier !== null && panier.length !== 0) {
-    const placePanier = document.getElementById("cart__items");
-    produits.forEach((produit) => {
-      const baliseArticle = document.createElement("article");
-      baliseArticle.classList.add("cart__item");
-      baliseArticle.dataset.id=`${produit._id}`;
-      baliseArticle.dataset.color=`${produit.couleur}`;
-      const baliseDivImg = document.createElement("div");
-      baliseDivImg.classList.add("cart__item__img");
-      const baliseImg = document.createElement("img");
-      baliseImg.src = produit.img;
-      baliseImg.alt = produit.altTxt;
-      const baliseDivContent = document.createElement("div");
-      baliseDivContent.classList.add("cart__item__content");
-      const baliseDivContentDesc = document.createElement("div");
-      baliseDivContentDesc.classList.add("cart__item__content__description");
-      const baliseTitre = document.createElement("h2");
-      baliseTitre.textContent = `${produit.nom}`;
-      const baliseCoul = document.createElement("p");
-      baliseCoul.textContent = `${produit.couleur}`;
-      const balisePrix = document.createElement("p");
-      balisePrix.textContent =`${produit.prix} €`;
-      const baliseDivContentSet = document.createElement("div");
-      baliseDivContentSet.classList.add('cart__item__content__settings');
-      const baliseDivContentQte = document.createElement("div");
-      baliseDivContentQte.classList.add('cart__item__content__settings__quantity');
-      const baliseQte = document.createElement("p");
-      baliseQte.textContent = "Qté : ";
-      const baliseInput = document.createElement("input");
-      baliseInput.setAttribute("type", "number");
-      baliseInput.classList.add('itemQuantity');
-      baliseInput.setAttribute("name", "itemQuantity");
-      baliseInput.setAttribute("min", "1");
-      baliseInput.setAttribute("max", "100");
-      baliseInput.setAttribute("value", produit.quantite);
-      baliseInput.value = `${produit.quantite}`;
-      const baliseDivDel = document.createElement("div");
-      baliseDivDel.classList.add("cart__item__content__settings__delete");
-      const baliseParaDel = document.createElement("p");
-      baliseParaDel.classList.add("deleteItem");
-      baliseParaDel.textContent = "Supprimer";
-      placePanier.appendChild(baliseArticle);
-      baliseArticle.appendChild(baliseDivImg);
-      baliseDivImg.appendChild(baliseImg);
-      baliseArticle.appendChild(baliseDivContent);
-      baliseDivContent.appendChild(baliseDivContentDesc);
-      baliseDivContentDesc.appendChild(baliseTitre);
-      baliseDivContentDesc.appendChild(baliseCoul);
-      baliseDivContentDesc.appendChild(balisePrix);
-      baliseDivContent.appendChild(baliseDivContentSet);
-      baliseDivContentSet.appendChild(baliseDivContentQte);
-      baliseDivContentQte.appendChild(baliseQte);
-      baliseDivContentQte.appendChild(baliseInput);
-      baliseDivContentSet.appendChild(baliseDivDel);
-      baliseDivDel.appendChild(baliseParaDel);
-
-      // placePanier.insertAdjacentHTML(
-      //   "beforeend",
-      //   `<article class="cart__item" data-id="${produit._id}" data-color="${produit.couleur}">
-      //   <div class="cart__item__img">
-      //     <img src="${produit.img}" alt="${produit.altTxt}">
-      //   </div>
-      //   <div class="cart__item__content">
-      //     <div class="cart__item__content__description">
-      //       <h2>${produit.nom}</h2>
-      //       <p>${produit.couleur}</p>
-      //       <p>${produit.prix} €</p>
-      //     </div>
-      //     <div class="cart__item__content__settings">
-      //       <div class="cart__item__content__settings__quantity">
-      //         <p>Qté : </p>
-      //         <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${produit.quantite}">
-      //       </div>
-      //       <div class="cart__item__content__settings__delete">
-      //         <p class="deleteItem">Supprimer</p>
-      //       </div>
-      //     </div>
-      //   </div>
-      // </article>`
-      // );
-    });
-  }
+  await panier.afficherPanier();
 }
 
-// Fonction de modification de la quantité d'un article dans le panier au clic
-function modifQte(id, color, nouvQte) {
-  const panier = recupPanier();
-  for (let i in panier) {
-    if (panier[i].id === id && panier[i].colors === color) {
-      panier[i].quantity = nouvQte;
-      sauvPanier(panier);
-    }
-  }
-  afficherTotaux();
-}
 document.addEventListener("change", (event) => {
   if (event.target.classList.contains("itemQuantity")) {
     const id = event.target.closest(".cart__item").dataset.id;
-    const color = event.target.closest(".cart__item").dataset.color;
-    const nouvQte = event.target.value;
-    modifQte(id, color, nouvQte);
-    
-    //location.reload();  recharge la page pour mettre à jour l'affichage du panier
+    const couleur = event.target.closest(".cart__item").dataset.color;
+    const nouvelleQuantite = event.target.value;
+    panier.modifierQuantite(id, couleur, nouvelleQuantite);
   }
 });
-// Fonction de suppression d'un article au clic
-function supprimerProduit(id, color) {
-  let panier = recupPanier();
-  panier = panier.filter(
-    (produit) => produit.id !== id || produit.colors !== color
-  );
-  sauvPanier(panier);
-  afficherTotaux();
-  //location.reload();
-}
+
 document.addEventListener("click", (event) => {
   if (event.target.classList.contains("deleteItem")) {
     const id = event.target.closest(".cart__item").dataset.id;
     const couleur = event.target.closest(".cart__item").dataset.color;
-    supprimerProduit(id, couleur);
-    afficherTotaux();
+    panier.supprimerProduit(id, couleur);
   }
 });
-// Fonction d'affichage des totaux
-async function afficherTotaux() {
-  const totalpanier = await fetchApi();
-  const produits = recupPanier();
-  console.log(totalpanier);
-  let totalArticles = 0;
-  let totalPrix = 0;
-  if (!Array.isArray(produits)) {
-    // Le panier est vide, on affiche 0 pour les totaux
-    totalArticles = 0;
-    totalPrix = 0;
-  } else {
-    totalpanier.forEach((produit) => {
-      const quantite = parseInt(produit.quantite);
-      const prix = produit.prix;
-      totalArticles += quantite;
-      totalPrix += quantite * prix;
-    });
-  }
-  const placeTotalPrix = document.getElementById("totalPrice");
-  placeTotalPrix.textContent = totalPrix;
-  const placeTotalArticles = document.getElementById("totalQuantity");
-  placeTotalArticles.innerHTML = totalArticles.toString();
-}
 
+async function afficherTotaux() {
+  await panier.afficherTotaux();
+}
 
 affichagePanier();
 afficherTotaux();

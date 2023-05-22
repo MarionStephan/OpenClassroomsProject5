@@ -50,7 +50,7 @@ fetch(produitUrl)
         if (panier === null) {
           return []; //si le LocalStorage est vide, on crée un tableau vide
         } else {
-          return [panier];
+          return panier;
         }
       }
       
@@ -101,4 +101,7 @@ fetch(produitUrl)
   })
   .catch(function (err) {
     console.log(err);
+    const errorMessage = document.createElement("p");
+    errorMessage.textContent = "Erreur lors de la récupération des données";
+    listeKanap.appendChild(errorMessage);
   });
