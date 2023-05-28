@@ -1,9 +1,12 @@
+// Création d'une instance de la classe Panier pour gérer les opérations sur le panier
 const panier = new Panier();
 
-async function affichagePanier() {
-  await panier.afficherPanier();
-}
 
+// Fonction pour afficher le contenu du panier
+panier.afficherPanier();
+
+
+// Écouteur d'événement pour détecter les changements de quantité dans le panier et appeler la méthode modifierQuantite du panier
 document.addEventListener("change", (event) => {
   if (event.target.classList.contains("itemQuantity")) {
     const id = event.target.closest(".cart__item").dataset.id;
@@ -13,6 +16,8 @@ document.addEventListener("change", (event) => {
   }
 });
 
+
+// Écouteur d'événement pour détecter les clics sur le bouton de suppression d'un produit du panier et appeler la méthode supprimerProduit du panier
 document.addEventListener("click", (event) => {
   if (event.target.classList.contains("deleteItem")) {
     const id = event.target.closest(".cart__item").dataset.id;
@@ -21,18 +26,17 @@ document.addEventListener("click", (event) => {
   }
 });
 
-async function afficherTotaux() {
-  await panier.afficherTotaux();
-}
 
-affichagePanier();
-afficherTotaux();
+// Fonction asynchrone pour afficher les totaux du panier (nombre d'articles et prix total)
+panier.afficherTotaux();
+
 
 const commandeBtn = document.getElementById("order");
 commandeBtn.addEventListener("click", function (e) {
   e.preventDefault();
   validate();
 });
+
 
 // Fonction de validation des input
 function validateInput(champ, valeur, regex, messageErreur) {
@@ -48,6 +52,8 @@ function validateInput(champ, valeur, regex, messageErreur) {
     return true;
   }
 }
+
+
 // Fonction de test de chaque input
 function validateContact() {
   const email = document.getElementById("email").value;
@@ -88,6 +94,7 @@ function validateContact() {
   );
 }
 
+
 // Fonction de récupération des infos contact pour l'objet de commande
 function getContactInfo() {
   const firstName = document.getElementById("firstName").value.trim();
@@ -97,6 +104,7 @@ function getContactInfo() {
   const email = document.getElementById("email").value.trim();
   return { firstName, lastName, address, city, email };
 }
+
 
 // Fonction de récupération des articles du panier
 function getProductsFromCart() {
@@ -108,6 +116,7 @@ function getProductsFromCart() {
   return cart.map((item) => item.id);
 }
 
+
 // Fonction de validation du panier s'il n'est pas vide
 function validateProducts(products) {
   if (products.length === 0) {
@@ -118,11 +127,8 @@ function validateProducts(products) {
   }
 }
 
-/**
- * @Description <Fonction de validation de la commande avec ajouts du tableau de produits et de l'objet de contact et validation des éléments>
- * @returns {any}
- * @params
- */
+
+//<Fonction de validation de la commande avec ajouts du tableau de produits et de l'objet de contact et validation des éléments>
 async function validate() {
   const contact = getContactInfo();
   const products = getProductsFromCart();

@@ -46,10 +46,3 @@ async function displayArticles() {
 }
 
 displayArticles();
-// listeKanap.innerHTML += `<a href="./product.html?id=${idKanap}">
-	// <article>
-	// <img src="${photoKanap}" alt="${altTexte}">
-	// <h3 class="productName">${nomKanap}</h3>
-	// <p class="productDescription">${desKanap}</p>
-	// </article>
-	// </a>`;

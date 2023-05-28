@@ -1,9 +1,14 @@
 class Panier {
+    // Le constructeur initialise le panier à partir des données stockées dans le localStorage, ou un tableau vide si aucune donnée n'est présente.
     constructor() {
         this.panier = JSON.parse(localStorage.getItem("kanapLs")) || [];
     }
+
+    // Cette méthode effectue une requête API pour récupérer les informations détaillées des produits présents dans le panier.
+    // Elle renvoie un tableau contenant les produits avec leurs informations complètes.
     async fetchApiData() {
         const tableauPanier = [];
+        let erreurAffichee = false; // Variable pour vérifier si une erreur a été affichée
         for (let i = 0; i < this.panier.length; i++) {
             try {
                 const response = await fetch(`http://localhost:3000/api/products/${this.panier[i].id}`);
@@ -19,15 +24,19 @@ class Panier {
                 };
                 tableauPanier.push(produit);
             } catch (error) {
-                console.log(error);
-                const errorMessage = document.createElement("p");
-                errorMessage.textContent = "Erreur lors de la récupération des données";
-                listeKanap.appendChild(errorMessage);
+                console.error(error);
+                if (!erreurAffichee) {
+                    window.alert("Erreur lors de la récupération des données");
+                    erreurAffichee = true; // Marquer qu'une erreur a été affichée pour éviter les répétitions
+                }
             }
         }
         return tableauPanier;
     }
 
+
+    // Cette méthode affiche les produits présents dans le panier sur la page du panier.
+    // Elle récupère les informations détaillées des produits à l'aide de la méthode fetchApiData(), puis génère les éléments HTML correspondants pour chaque produit.
     async afficherPanier() {
         const produits = await this.fetchApiData();
         if (produits.length !== 0) {
@@ -89,6 +98,10 @@ class Panier {
         }
     }
 
+    // Cette méthode modifie la quantité d'un produit dans le panier.
+    // Elle recherche le produit correspondant dans le panier, met à jour la quantité et sauvegarde les modifications dans le localStorage.
+    // Elle met également à jour les totaux affichés sur la page du panier.
+
     modifierQuantite(id, couleur, nouvelleQuantite) {
         for (let i in this.panier) {
             if (this.panier[i].id === id && this.panier[i].colors === couleur) {
@@ -100,6 +113,10 @@ class Panier {
         this.afficherTotaux();
     }
 
+
+    // Cette méthode supprime un produit du panier.
+    // Elle filtre le panier pour retirer le produit correspondant en fonction de son identifiant (id) et de sa couleur.
+    // Elle sauvegarde ensuite les modifications dans le localStorage et met à jour les totaux affichés sur la page du panier.
     supprimerProduit(id, couleur) {
         this.panier = this.panier.filter((produit) => produit.id !== id || produit.colors !== couleur);
         this.sauvegarderPanier();
@@ -110,10 +127,15 @@ class Panier {
         }
     }
 
+
+    // Cette méthode sauvegarde le panier actuel dans le localStorage.   
     sauvegarderPanier() {
         localStorage.setItem("kanapLs", JSON.stringify(this.panier));
     }
 
+
+    // Cette méthode calcule les totaux (nombre total d'articles et prix total) à partir des produits présents dans le panier.
+    // Elle met à jour les éléments HTML correspondants affichant les totaux sur la page du panier.
     async afficherTotaux() {
         const totalPanier = await this.fetchApiData();
         let totalArticles = 0;
@@ -130,5 +152,40 @@ class Panier {
         placeTotalPrix.textContent = totalPrix;
         const placeTotalArticles = document.getElementById("totalQuantity");
         placeTotalArticles.textContent = totalArticles.toString();
+    }
+
+
+    // Cette méthode ajoute un produit au panier.
+    // Elle recherche si le produit existe déjà dans le panier en se basant sur son identifiant (id) et sa couleur.
+    // Si le produit est déjà présent, elle met à jour la quantité. Sinon, elle ajoute le produit au panier.
+    // Elle sauvegarde ensuite les modifications dans le localStorage et met à jour les totaux affichés sur la page du panier.
+
+    ajouterProduit(produit) {
+        const produitIndex = this.panier.findIndex(
+            (p) => p.id === produit.id && p.colors === produit.colors
+        );
+        if (produitIndex !== -1) {
+            this.panier[produitIndex].quantity =
+                parseInt(this.panier[produitIndex].quantity) +
+                parseInt(produit.quantity);
+        } else {
+            produit.quantity = produit.quantity;
+            this.panier.push(produit);
+        }
+        this.sauvegarderPanier();
+        this.afficherTotaux();
+    }
+
+
+    // Fonction de sauvegarde du panier dans le LS
+    sauvPanier(panier) {
+        localStorage.setItem("kanapLs", JSON.stringify(panier));
+    }
+
+
+    // Cette méthode récupère le panier depuis le localStorage.
+    // Elle renvoie le panier sous forme d'un tableau d'objets.
+    recupPanier() {
+        return JSON.parse(localStorage.getItem("kanapLs"));
     }
 }
