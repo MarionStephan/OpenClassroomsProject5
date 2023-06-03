@@ -27,7 +27,7 @@ document.addEventListener("click", (event) => {
 });
 
 
-// Fonction asynchrone pour afficher les totaux du panier (nombre d'articles et prix total)
+// Fonction pour afficher les totaux du panier (nombre d'articles et prix total)
 panier.afficherTotaux();
 
 
@@ -43,15 +43,16 @@ function validateInput(champ, valeur, regex, messageErreur) {
   const alerte = document.getElementById(`${champ}ErrorMsg`);
   const resultat = regex.test(valeur);
   if (!resultat || valeur === "") {
-    alerte.innerHTML = messageErreur;
+    alerte.textContent = messageErreur;
     alerte.style.display = "block";
     return false;
   } else {
-    alerte.innerHTML = "";
+    alerte.textContent = "";
     alerte.style.display = "none";
     return true;
   }
 }
+
 
 
 // Fonction de test de chaque input

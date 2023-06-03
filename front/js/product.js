@@ -70,4 +70,4 @@ fetch(`http://localhost:3000/api/products/${kanapId}`)
   .catch(function (err) {
     console.error(err);
     window.alert("Erreur lors de la récupération des données");
-});
+  });

@@ -177,12 +177,6 @@ class Panier {
     }
 
 
-    // Fonction de sauvegarde du panier dans le LS
-    sauvPanier(panier) {
-        localStorage.setItem("kanapLs", JSON.stringify(panier));
-    }
-
-
     // Cette méthode récupère le panier depuis le localStorage.
     // Elle renvoie le panier sous forme d'un tableau d'objets.
     recupPanier() {
