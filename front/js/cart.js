@@ -31,12 +31,6 @@ document.addEventListener("click", (event) => {
 panier.afficherTotaux();
 
 
-const commandeBtn = document.getElementById("order");
-commandeBtn.addEventListener("click", function (e) {
-  e.preventDefault();
-  validate();
-});
-
 
 // Fonction de validation des input
 function validateInput(champ, valeur, regex, messageErreur) {
@@ -127,6 +121,14 @@ function validateProducts(products) {
     return true;
   }
 }
+
+
+// Validation de la commande au clic
+const commandeBtn = document.getElementById("order");
+commandeBtn.addEventListener("click", function (e) {
+  e.preventDefault();
+  validate();
+});
 
 
 //<Fonction de validation de la commande avec ajouts du tableau de produits et de l'objet de contact et validation des éléments>
