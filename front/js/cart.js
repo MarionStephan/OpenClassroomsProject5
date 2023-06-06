@@ -103,7 +103,7 @@ function getContactInfo() {
 
 // Fonction de récupération des articles du panier
 function getProductsFromCart() {
-  const cart = recupPanier();
+  const cart = panier.recupPanier();
   if (!cart || cart.length === 0) {
     // Gérer le cas où le panier est vide ou non initialisé
     return [];
