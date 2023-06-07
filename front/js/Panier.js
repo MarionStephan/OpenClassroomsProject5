@@ -107,12 +107,15 @@ class Panier {
             for (let i in this.panier) {
                 if (this.panier[i].id === id && this.panier[i].colors === couleur) {
                     this.panier[i].quantity = nouvelleQuantite;
-                    this.sauvegarderPanier();
                     break;
                 }
             }
+            this.sauvegarderPanier();
+            this.afficherTotaux();
+        } else {
+            alert('La quantité saisie est invalide');
         }
-        this.afficherTotaux();
+
     }
 
 
