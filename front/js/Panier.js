@@ -103,7 +103,7 @@ class Panier {
     // Elle met également à jour les totaux affichés sur la page du panier.
 
     modifierQuantite(id, couleur, nouvelleQuantite) {
-        if (nouvelleQuantite >= 0 && nouvelleQuantite <= 100) {
+        if (nouvelleQuantite > 0 && nouvelleQuantite <= 100) {
             for (let i in this.panier) {
                 if (this.panier[i].id === id && this.panier[i].colors === couleur) {
                     this.panier[i].quantity = nouvelleQuantite;
