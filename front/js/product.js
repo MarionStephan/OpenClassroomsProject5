@@ -61,9 +61,6 @@ fetch(`http://localhost:3000/api/products/${kanapId}`)
           quantity: qteProduit.value,
         };
         panier.ajouterProduit(produit);
-        alert(
-          `Le canapé ${nameKanap} ${colorOptions.value} a été ajouté en ${qteProduit.value} exemplaires à votre panier !`
-        );
       }
     });
   })
