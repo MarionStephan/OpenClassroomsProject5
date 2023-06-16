@@ -184,16 +184,11 @@ class Panier {
                 alert("Vous ne pouvez pas ajouter plus de 100 articles identiques.");
             }
         } else {
-            const totalArticles = this.panier.reduce((total, produit) => total + parseInt(produit.quantity), 0);
-
-            if (totalArticles + parseInt(produit.quantity) <= 100) {
-                this.panier.push(produit);
-                this.sauvegarderPanier();
-                this.afficherTotaux();
-                alert(`Le canapé ${produit.name} ${produit.colors} a été ajouté en ${produit.quantity} exemplaires à votre panier !`);
-            } else {
-                alert("Vous ne pouvez pas ajouter plus de 100 articles identiques.");
-            }
+            produit.quantity = produit.quantity;
+            this.panier.push(produit);
+            this.sauvegarderPanier();
+            this.afficherTotaux();
+            alert(`Le canapé ${produit.name} ${produit.colors} a été ajouté en ${produit.quantity} exemplaires à votre panier !`);
         }
     }
 
